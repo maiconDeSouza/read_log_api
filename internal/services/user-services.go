@@ -13,7 +13,7 @@ import (
 
 type UserServicesInterface interface {
 	RegisterUser(newUser models.UseRequest) (*models.User, *models.AppErr)
-	Login(login models.Login) (*http.Cookie, *models.AppErr)
+	Login(login models.Login) (*models.User, *http.Cookie, *models.AppErr)
 }
 
 type UserService struct {
@@ -64,31 +64,31 @@ func (s *UserService) RegisterUser(newUser models.UseRequest) (*models.User, *mo
 	return result, appErr
 }
 
-func (s *UserService) Login(login models.Login) (*http.Cookie, *models.AppErr) {
+func (s *UserService) Login(login models.Login) (*models.User, *http.Cookie, *models.AppErr) {
 	user, appErr := s.repo.FindUserByEmail(login.Email)
 	if appErr != nil {
 		if errors.Is(appErr.Error, gorm.ErrRecordNotFound) {
 			msg := "Senha ou e-mail errados!"
 			code := http.StatusUnauthorized
-			return nil, models.NewAppErr(msg, code, nil)
+			return nil, nil, models.NewAppErr(msg, code, nil)
 		}
-		return nil, appErr
+		return nil, nil, appErr
 	}
 
 	passwordValid := checkPasswordHash(login.Password, user.Password)
 	if !passwordValid {
 		msg := "Senha ou e-mail errados!"
 		code := http.StatusUnauthorized
-		return nil, models.NewAppErr(msg, code, nil)
+		return nil, nil, models.NewAppErr(msg, code, nil)
 	}
 
 	jwt, appErr := generateJWT(*user, s.env.SecretKey)
 	if appErr != nil {
-		return nil, appErr
+		return nil, nil, appErr
 	}
 
 	cookie := generateCookie(jwt)
 
-	return cookie, nil
+	return user, cookie, nil
 
 }

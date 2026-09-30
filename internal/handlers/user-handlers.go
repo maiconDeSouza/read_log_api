@@ -56,7 +56,7 @@ func (h *UserHandlers) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookie, appErr := h.services.Login(login)
+	user, cookie, appErr := h.services.Login(login)
 	if appErr != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(appErr.Code)
@@ -66,5 +66,5 @@ func (h *UserHandlers) Login(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, cookie)
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Cookie com HttpOnly configurado com sucesso!"))
+	json.NewEncoder(w).Encode(user)
 }
