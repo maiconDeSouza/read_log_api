@@ -9,6 +9,7 @@ import (
 
 type UserRepoInterface interface {
 	CreateUser(user models.User) (*models.User, *models.AppErr)
+	FindUserByEmail(email string) (*models.User, *models.AppErr)
 }
 
 type UserRepo struct {
@@ -26,6 +27,18 @@ func (r *UserRepo) CreateUser(user models.User) (*models.User, *models.AppErr) {
 		msg := "Erro ao salvar o usuario no banco de dados"
 		code := http.StatusInternalServerError
 		return nil, models.NewAppErr(msg, code, re.Error)
+	}
+
+	return &user, nil
+}
+
+func (r *UserRepo) FindUserByEmail(email string) (*models.User, *models.AppErr) {
+	user := models.User{}
+
+	if err := r.db.Where("email = ?", email).First(&user).Error; err != nil {
+		msg := "Erro no servidor!"
+		code := http.StatusInternalServerError
+		return nil, models.NewAppErr(msg, code, err)
 	}
 
 	return &user, nil

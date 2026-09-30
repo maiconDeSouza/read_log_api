@@ -23,4 +23,6 @@ func (r *Routes) InitRoutes() {
 	})
 
 	r.mux.HandleFunc(fmt.Sprintf("POST %s/user", r.versionAPI), r.userHandlers.RegisterUser)
+	r.mux.HandleFunc(fmt.Sprintf("POST %s/user/login", r.versionAPI), r.userHandlers.Login)
+
 }
