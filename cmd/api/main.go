@@ -15,7 +15,7 @@ import (
 func main() {
 	env, mux, db := config.InitConfig()
 	userRepo := repositories.NewUserRepo(db)
-	userServices := services.NewUserService(userRepo)
+	userServices := services.NewUserService(userRepo, *env)
 	userHandlers := handlers.NewUserHandlers(userServices)
 	router := router.NewRoutes(mux, userHandlers, env.VersionAPI)
 	router.InitRoutes()

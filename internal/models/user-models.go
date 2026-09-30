@@ -26,6 +26,11 @@ type UseRequest struct {
 	RepeatPassword string `json:"repeatPassword"`
 }
 
+type Login struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type UserBook struct {
 	UserID       uuid.UUID  `gorm:"type:uuid;primaryKey" json:"userID"`
 	BookID       uuid.UUID  `gorm:"type:uuid;primaryKey" json:"bookID"`

@@ -1,23 +1,28 @@
 package services
 
 import (
+	"errors"
 	"net/http"
 	"net/mail"
 
+	"github.com/maiconDeSouza/read_log_api/internal/config"
 	"github.com/maiconDeSouza/read_log_api/internal/models"
 	"github.com/maiconDeSouza/read_log_api/internal/repositories"
+	"gorm.io/gorm"
 )
 
 type UserServicesInterface interface {
 	RegisterUser(newUser models.UseRequest) (*models.User, *models.AppErr)
+	Login(login models.Login) (*http.Cookie, *models.AppErr)
 }
 
 type UserService struct {
 	repo repositories.UserRepoInterface
+	env  *config.Env
 }
 
-func NewUserService(repo repositories.UserRepoInterface) *UserService {
-	return &UserService{repo: repo}
+func NewUserService(repo repositories.UserRepoInterface, env config.Env) *UserService {
+	return &UserService{repo: repo, env: &env}
 }
 
 func (s *UserService) RegisterUser(newUser models.UseRequest) (*models.User, *models.AppErr) {
@@ -57,4 +62,33 @@ func (s *UserService) RegisterUser(newUser models.UseRequest) (*models.User, *mo
 		return result, appErr
 	}
 	return result, appErr
+}
+
+func (s *UserService) Login(login models.Login) (*http.Cookie, *models.AppErr) {
+	user, appErr := s.repo.FindUserByEmail(login.Email)
+	if appErr != nil {
+		if errors.Is(appErr.Error, gorm.ErrRecordNotFound) {
+			msg := "Senha ou e-mail errados!"
+			code := http.StatusUnauthorized
+			return nil, models.NewAppErr(msg, code, nil)
+		}
+		return nil, appErr
+	}
+
+	passwordValid := checkPasswordHash(login.Password, user.Password)
+	if !passwordValid {
+		msg := "Senha ou e-mail errados!"
+		code := http.StatusUnauthorized
+		return nil, models.NewAppErr(msg, code, nil)
+	}
+
+	jwt, appErr := generateJWT(*user, s.env.SecretKey)
+	if appErr != nil {
+		return nil, appErr
+	}
+
+	cookie := generateCookie(jwt)
+
+	return cookie, nil
+
 }

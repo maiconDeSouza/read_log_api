@@ -10,6 +10,7 @@ import (
 
 type UserHandlersInterface interface {
 	RegisterUser(w http.ResponseWriter, r *http.Request)
+	Login(w http.ResponseWriter, r *http.Request)
 }
 
 type UserHandlers struct {
@@ -39,6 +40,31 @@ func (h *UserHandlers) RegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(user)
+}
+
+func (h *UserHandlers) Login(w http.ResponseWriter, r *http.Request) {
+	login := models.Login{}
+
+	if err := json.NewDecoder(r.Body).Decode(&login); err != nil {
+		msg := "Erro no json enviado!"
+		code := http.StatusBadRequest
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(code)
+		json.NewEncoder(w).Encode(models.NewAppErr(msg, code, err))
+		return
+	}
+
+	cookie, appErr := h.services.Login(login)
+	if appErr != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(appErr.Code)
+		json.NewEncoder(w).Encode(appErr)
+		return
+	}
+
+	http.SetCookie(w, cookie)
+	w.WriteHeader(http.StatusCreated)
+	w.Write([]byte("Cookie com HttpOnly configurado com sucesso!"))
 }
