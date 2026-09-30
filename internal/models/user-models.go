@@ -11,12 +11,19 @@ type User struct {
 	ID            uuid.UUID  `gorm:"type:uuid;default:gen_random_uuid();primaryKey" json:"id"`
 	Nickname      string     `gorm:"type:varchar(255);uniqueIndex;not null" json:"nickname"`
 	Email         string     `gorm:"type:varchar(255);uniqueIndex;not null" json:"email"`
-	Password      string     `gorm:"not null" json:"-"`
+	Password      string     `gorm:"not null" json:"password,omitempty"`
 	IsVerified    bool       `gorm:"default:false" json:"isVerified"`
 	CurrentBookID *uuid.UUID `gorm:"type:uuid" json:"currentBookID"`
-	CreatedAt     time.Time  `json:"createdAt"`
-	UpdatedAt     time.Time  `json:"updatedAt"`
+	CreatedAt     time.Time  `json:"createdAt,omitempty"`
+	UpdatedAt     time.Time  `json:"updatedAt,omitempty"`
 	UserBooks     []UserBook `gorm:"foreignKey:UserID" json:"userBooks"`
+}
+
+type UseRequest struct {
+	Nickname       string `json:"nickname"`
+	Email          string `json:"email"`
+	Password       string `json:"password"`
+	RepeatPassword string `json:"repeatPassword"`
 }
 
 type UserBook struct {

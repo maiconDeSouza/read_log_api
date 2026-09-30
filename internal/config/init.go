@@ -70,7 +70,7 @@ func initDB(env *Env) *gorm.DB {
 		log.Fatalf("❌ Falha ao migrar movie: %v", err)
 	}
 
-	book := models.UserBook{}
+	book := models.Book{}
 	err = db.AutoMigrate(&book)
 	if err != nil {
 		log.Fatalf("❌ Falha ao migrar movie: %v", err)
