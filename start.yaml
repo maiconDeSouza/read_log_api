@@ -1,0 +1,40 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Start
+meta:
+  id: wrk_f6ae5988b71f4ce7b6e1b007c1a57bd3
+  created: 1790729460571
+  modified: 1790729460571
+  description: ""
+collection:
+  - url: "{{ _.base_url }}"
+    name: Rota de Start
+    meta:
+      id: req_eda6c2fb04e0485eb9719d5c0c62ebc7
+      created: 1790729468854
+      modified: 1790729509023
+      isPrivate: false
+      description: ""
+      sortKey: -1790729468854
+    method: GET
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_5879a2e1b1bc39bb2148644301edcb656a652242
+    created: 1790729460599
+    modified: 1790729460599
+environments:
+  name: Base Environment
+  meta:
+    id: env_5879a2e1b1bc39bb2148644301edcb656a652242
+    created: 1790729460594
+    modified: 1790729460594
+    isPrivate: false
