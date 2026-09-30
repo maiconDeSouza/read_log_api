@@ -1,0 +1,89 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: User
+meta:
+  id: wrk_44084c99d07449958ee33ed5beef3fd3
+  created: 1790764471441
+  modified: 1790764471441
+  description: ""
+collection:
+  - url: "{{ _.base_url }}/user"
+    name: Create User
+    meta:
+      id: req_b48fc5eb246a483ea2fd4ba191a4d386
+      created: 1790764479540
+      modified: 1790764873021
+      isPrivate: false
+      description: ""
+      sortKey: -1790764479540
+    method: POST
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "nickname": "Dante Vida Loka",
+          "email": "dante@example.com",
+          "password": "123!",
+          "repeatPassword": "123!"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: "{{ _.base_url }}/user/login"
+    name: Login
+    meta:
+      id: req_803b62e954e748ab8f9ffc392a0c9f5c
+      created: 1790764733627
+      modified: 1790765287852
+      isPrivate: false
+      description: ""
+      sortKey: -1790764733627
+    method: POST
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "email": "dante@example.com",
+          "password": "123!"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_b08948a86fa547cd63444dcbf079770f6bc648da
+    created: 1790764471444
+    modified: 1790765268589
+  cookies:
+    - id: 32f7f226-2e84-4bd0-92bf-b61676ba91ac
+      key: session_token_user
+      value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTA3Njg4NjgsInN1YiI6IjI4MzJmNDFiLTU4NzMtNDUyNC1hNWY5LWZhNDNlMmM0ZjA1OSJ9.rJht4SPSAHH3qI-9uMwZeukSH9Ch-v1P9HI0Ap-U2n8
+      domain: 127.0.0.1
+      path: /ap1/v1/user
+      secure: true
+      httpOnly: true
+      hostOnly: true
+environments:
+  name: Base Environment
+  meta:
+    id: env_b08948a86fa547cd63444dcbf079770f6bc648da
+    created: 1790764471444
+    modified: 1790764471444
+    isPrivate: false
