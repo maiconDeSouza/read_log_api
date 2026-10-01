@@ -13,7 +13,7 @@ import (
 
 type UserServicesInterface interface {
 	RegisterUser(newUser models.UseRequest) (*models.User, *models.AppErr)
-	Login(login models.Login) (*models.User, *http.Cookie, *models.AppErr)
+	Login(login models.Login) (*models.UseResponse, *http.Cookie, *models.AppErr)
 }
 
 type UserService struct {
@@ -64,7 +64,7 @@ func (s *UserService) RegisterUser(newUser models.UseRequest) (*models.User, *mo
 	return result, appErr
 }
 
-func (s *UserService) Login(login models.Login) (*models.User, *http.Cookie, *models.AppErr) {
+func (s *UserService) Login(login models.Login) (*models.UseResponse, *http.Cookie, *models.AppErr) {
 	user, appErr := s.repo.FindUserByEmail(login.Email)
 	if appErr != nil {
 		if errors.Is(appErr.Error, gorm.ErrRecordNotFound) {
@@ -89,6 +89,14 @@ func (s *UserService) Login(login models.Login) (*models.User, *http.Cookie, *mo
 
 	cookie := generateCookie(jwt)
 
-	return user, cookie, nil
+	userLogin := &models.UseResponse{
+		ID:         user.ID,
+		Nickname:   user.Nickname,
+		Email:      user.Email,
+		IsVerified: user.IsVerified,
+		UserBooks:  user.UserBooks,
+	}
+
+	return userLogin, cookie, nil
 
 }

@@ -19,6 +19,14 @@ type User struct {
 	UserBooks     []UserBook `gorm:"foreignKey:UserID" json:"userBooks"`
 }
 
+type UseResponse struct {
+	ID         uuid.UUID  `json:"id"`
+	Nickname   string     `json:"nickname"`
+	Email      string     `json:"email"`
+	IsVerified bool       `json:"isVerified"`
+	UserBooks  []UserBook `sjson:"userBooks"`
+}
+
 type UseRequest struct {
 	Nickname       string `json:"nickname"`
 	Email          string `json:"email"`
